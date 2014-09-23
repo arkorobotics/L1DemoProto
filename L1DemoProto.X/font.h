@@ -58,9 +58,9 @@
  * Description:  Heigth: 16 pixels, range: ' ' to '?'
  ***********************************/
 
-extern __eds__ char fonts[] __attribute__((aligned(2)));
+extern __eds__ char fonts[] __attribute__((far,section("eds1a"),space(eds) ,address(0x00800)));
 
-__eds__ char fonts[] __attribute__((aligned(2))) =
+__eds__ char fonts[] __attribute__((far,section("eds1a"),space(eds) ,address(0x00800))) =
 {
 /****************************************
  * Font header

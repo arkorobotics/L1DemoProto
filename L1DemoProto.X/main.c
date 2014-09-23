@@ -119,12 +119,14 @@ void config_graphics(void) {
     G1DPADRL = (unsigned long)(GFXDisplayBuffer) & 0xFFFF;
     G1DPADRH = 0;
 
+    /*
     G1W1ADRL = (unsigned long)(fonts) & 0xFFFF;
     G1W1ADRH = 0;
 
     G1CMDL = (unsigned long)(fonts) & 0xFFFF;
     G1CMDH = 0x5200;
-
+    */
+    
     G1CON2bits.DPBPP = 0;     /* 8bpp mode */
     G1CON1bits.PUBPP = 0;
 
@@ -178,14 +180,35 @@ int main(void) {
 
     while (1) {
         y=0;
-
+        /*
         for (y = 6528; y < 43008; y++)
         {
            GFXDisplayBuffer[(unsigned long)(y)] = x;
                   
         }
+        */
+        G1CMDL = 0xFFFF;
+        G1CMDH = 0x5000;    // CHR_FGCOLOR
 
-        __delay_ms(1000);
+        G1CMDL = 0x0000;
+        G1CMDH = 0x5100;    // CHR_BGCOLOR
+
+        G1CMDL = (unsigned long)(fonts) & 0xFFFF;
+        G1CMDH = 0x5200;    // CHR_FONTBASE
+
+        G1CMDL = x;
+        G1CMDH = 0x530A;    // CHR_PRINTCHAR
+
+        G1CMDL = x;
+        G1CMDH = 0x580A;    // CHR_TXTAREASTART
+
+        G1CMDL = x+16;
+        G1CMDH = 0x590A;    // CHR_TXTAREAEND
+
+        G1CMDL = x;
+        G1CMDH = 0x5A0A;    // CHR_PRINTPOS
+
+        __delay_ms(10);
         x++;
         //G1CON2bits.DPTEST = 2;
     }
