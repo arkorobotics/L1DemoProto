@@ -1,4 +1,4 @@
-Microchip Technology Inc, v∏Å6
+Microchip Technology Inc, v∏Å^
 
 Tool Name:
   c:\program files (x86)\microchip\xc16\v1.21\bin\bin\..\bin/elf-ld.exe
@@ -61,10 +61,10 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200                0xd0           0x138  (312)
 .dinit                       0x2d0               0x590           0x858  (2136)
-.text                        0x860               0x1e8           0x2dc  (732)
-.init.delay32                0xa48                0x1c            0x2a  (42)
+.text                        0x860               0x204           0x306  (774)
+.init.delay32                0xa64                0x1c            0x2a  (42)
 
-                     Total program memory used (bytes):          0xc96  (3222) 1%
+                     Total program memory used (bytes):          0xcc0  (3264) 1%
 
 
 Data Memory  [Origin = 0x800, Length = 0x18000]
@@ -72,11 +72,11 @@ Data Memory  [Origin = 0x800, Length = 0x18000]
 section                    address      alignment gaps    total length  (dec)
 -------                    -------      --------------    -------------------
 eds1a                        0x800                   0           0x828  (2088)
-.nbss                       0x1028                   0             0x8  (8)
-.ndata                      0x1030                   0             0x8  (8)
+.ndata                      0x1028                   0             0x8  (8)
+.nbss                       0x1030                   0             0x4  (4)
 eds1b                       0x1f00                   0          0xfa00  (64000)
 
-                        Total data memory used (bytes):        0x10238  (66104) 67%
+                        Total data memory used (bytes):        0x10234  (66100) 67%
 
 
 Dynamic Memory Usage
@@ -84,9 +84,9 @@ Dynamic Memory Usage
 region                     address                      maximum length  (dec)
 ------                     -------                      ---------------------
 heap                             0                                   0  (0)
-stack                       0x1038                               0xec8  (3784)
+stack                       0x1034                               0xecc  (3788)
 
-                        Maximum dynamic memory (bytes):          0xec8  (3784)
+                        Maximum dynamic memory (bytes):          0xecc  (3788)
 
 
 External Symbols in Data Memory (by address):
@@ -107,19 +107,19 @@ External Symbols in Program Memory (by address):
                   0x000232                  __data_init_extended
                   0x0002cc                  __DefaultInterrupt
                   0x000860                  _config_graphics
-                  0x00093c                  _main
-                  0x000a48                  ___delay32
+                  0x00094a                  _main
+                  0x000a64                  ___delay32
 
 External Symbols in Program Memory (by name):
 
                   0x0002cc                  __DefaultInterrupt
-                  0x000a48                  ___delay32
+                  0x000a64                  ___delay32
                   0x000232                  __data_init
                   0x000232                  __data_init_extended
                   0x000226                  __psv_init
                   0x000200                  __resetPRI
                   0x000860                  _config_graphics
-                  0x00093c                  _main
+                  0x00094a                  _main
 
 Memory Configuration
 
@@ -197,26 +197,26 @@ __CONFIG1         0x02abfe          0x2
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x1d97
+.debug_info       0x000000       0x1dcc
  *(.debug_info)
- .debug_info      0x000000       0x1d97 build/default/production/main.o
+ .debug_info      0x000000       0x1dcc build/default/production/main.o
  *(.gnu.linkonce.wi.*)
 
 .debug_abbrev     0x000000        0x14c
  *(.debug_abbrev)
  .debug_abbrev    0x000000        0x14c build/default/production/main.o
 
-.debug_line       0x000000        0x350
+.debug_line       0x000000        0x37a
  *(.debug_line)
- .debug_line      0x000000        0x350 build/default/production/main.o
+ .debug_line      0x000000        0x37a build/default/production/main.o
 
 .debug_frame      0x000000         0x34
  *(.debug_frame)
  .debug_frame     0x000000         0x34 build/default/production/main.o
 
-.debug_str        0x000000         0xd5
+.debug_str        0x000000         0xe7
  *(.debug_str)
- .debug_str       0x000000         0xd5 build/default/production/main.o
+ .debug_str       0x000000         0xe7 build/default/production/main.o
 
 .debug_loc
  *(.debug_loc)
@@ -1764,20 +1764,20 @@ eds1a               0x0800        0x828
  eds1a              0x0800        0x828 build/default/production/main.o
                     0x0800                  _fonts
 
-.nbss               0x1028          0x8
- .nbss              0x1028          0x8 build/default/production/main.o
+.ndata              0x1028          0x8
+ .ndata             0x1028          0x8 build/default/production/main.o
 
-.ndata              0x1030          0x8
- .ndata             0x1030          0x8 build/default/production/main.o
+.nbss               0x1030          0x4
+ .nbss              0x1030          0x4 build/default/production/main.o
 
 .dinit            0x0002d0        0x590
  .dinit           0x0002d0        0x590 data_init
 
-.text             0x000860        0x1e8
- .text            0x000860        0x1e8 build/default/production/main.o
+.text             0x000860        0x204
+ .text            0x000860        0x204 build/default/production/main.o
                   0x000860                  _config_graphics
-                  0x00093c                  _main
+                  0x00094a                  _main
 
-.init.delay32     0x000a48         0x1c
- .init.delay32    0x000a48         0x1c c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(delay32.eo)
-                  0x000a48                  ___delay32
+.init.delay32     0x000a64         0x1c
+ .init.delay32    0x000a64         0x1c c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(delay32.eo)
+                  0x000a64                  ___delay32

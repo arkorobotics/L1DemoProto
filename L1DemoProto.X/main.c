@@ -118,11 +118,10 @@ void config_graphics(void) {
     G1DBLCONbits.VENST = VER_FRONT_PORCH + VER_PULSE_WIDTH + VER_BACK_PORCH;
     G1DBLCONbits.HENST = HOR_FRONT_PORCH + HOR_PULSE_WIDTH + HOR_BACK_PORCH;
     
-    //G1DPADRL = (unsigned long)(GFXDisplayBuffer) & 0xFFFF;
-    //G1DPADRH = 0;
+    G1DPADRL = (unsigned long)(GFXDisplayBuffer) & 0xFFFF;
+    G1DPADRH = 0;
 
-   
-    G1W1ADRL = (unsigned long)(GFXDisplayBuffer) & 0xFFFF;
+    G1W1ADRL = (unsigned long)(GFXDisplayBuffer+6000) & 0xFFFF;
     G1W1ADRH = 0;
 
     G1CON2bits.DPBPP = 0;     /* 8bpp mode */
@@ -165,9 +164,8 @@ int main(void) {
     ANSG = 0x0000;
     //TRISE = 0x0000;
 
-    static uint32_t y;
-    
-    for (y = 0; y < 90000; y++)
+    uint32_t y;
+    for (y = 1; y < GFX_DISPLAY_PIXEL_COUNT; y++)
     {
         GFXDisplayBuffer[(unsigned long)(y)] = 0x00;
     }
@@ -178,7 +176,7 @@ int main(void) {
     y=0;
 
     while (1) {
-
+        
         G1CMDL = (unsigned long)(0x0800) & 0xFFFF;
         G1CMDH = 0x5200;
         __delay_ms(1);
@@ -210,7 +208,10 @@ int main(void) {
         __delay_ms(10);
         
         x++;
-
+        if(x>0xFFFE)
+        {
+            x=0;
+        }
       
         //G1CON2bits.DPTEST = 2;
     }
