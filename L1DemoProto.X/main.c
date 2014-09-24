@@ -10,6 +10,8 @@
 #include <xc.h>
 
 #include "font.h"
+#define font_28_SIZE    (2088)
+
 
 #define  FCY    16000000UL    // Instruction cycle frequency, Hz
 #include <libpic30.h>
@@ -116,17 +118,13 @@ void config_graphics(void) {
     G1DBLCONbits.VENST = VER_FRONT_PORCH + VER_PULSE_WIDTH + VER_BACK_PORCH;
     G1DBLCONbits.HENST = HOR_FRONT_PORCH + HOR_PULSE_WIDTH + HOR_BACK_PORCH;
     
-    G1DPADRL = (unsigned long)(GFXDisplayBuffer) & 0xFFFF;
-    G1DPADRH = 0;
+    //G1DPADRL = (unsigned long)(GFXDisplayBuffer) & 0xFFFF;
+    //G1DPADRH = 0;
 
-    /*
-    G1W1ADRL = (unsigned long)(fonts) & 0xFFFF;
+   
+    G1W1ADRL = (unsigned long)(GFXDisplayBuffer) & 0xFFFF;
     G1W1ADRH = 0;
 
-    G1CMDL = (unsigned long)(fonts) & 0xFFFF;
-    G1CMDH = 0x5200;
-    */
-    
     G1CON2bits.DPBPP = 0;     /* 8bpp mode */
     G1CON1bits.PUBPP = 0;
 
@@ -167,49 +165,53 @@ int main(void) {
     ANSG = 0x0000;
     //TRISE = 0x0000;
 
-    uint32_t y;
+    static uint32_t y;
+    
     for (y = 1; y < GFX_DISPLAY_PIXEL_COUNT+4000; y++)
     {
         GFXDisplayBuffer[(unsigned long)(y)] = 0x00;
     }
-
+    
     config_graphics();
 
-    uint32_t x = 0;
+    static uint32_t x = 0x0000;
     y=0;
 
     while (1) {
-        y=0;
-        /*
-        for (y = 6528; y < 43008; y++)
-        {
-           GFXDisplayBuffer[(unsigned long)(y)] = x;
-                  
-        }
-        */
+
+        G1CMDL = (unsigned long)(0x0800) & 0xFFFF;
+        G1CMDH = 0x5200;
+        __delay_ms(1);
         G1CMDL = 0xFFFF;
         G1CMDH = 0x5000;    // CHR_FGCOLOR
-
+        __delay_ms(1);
         G1CMDL = 0x0000;
         G1CMDH = 0x5100;    // CHR_BGCOLOR
-
-        G1CMDL = (unsigned long)(fonts) & 0xFFFF;
+        __delay_ms(1);
+        G1CMDL = (unsigned long)(0x0800) & 0xFFFF;
         G1CMDH = 0x5200;    // CHR_FONTBASE
+        __delay_ms(1);
+        G1CMDL = (unsigned long)(x) & 0x7FFF;
+        G1CMDH = 0x5300;    // CHR_PRINTCHAR
+        __delay_ms(1);
+        G1CMDL = 0x0000;
+        G1CMDH = 0x5800;    // CHR_TXTAREASTART
+        __delay_ms(1);
+        static uint32_t end_x = HOR_RES;
+        static uint32_t end_y = VER_RES;
 
+        G1CMDL = 0xFFFF;//((uint32_t)((end_x>>8)<<12) & (0xF000)) || ((uint32_t)(end_y) & (0x0FFF));
+        G1CMDH = (0x59FF); ///|| ((uint32_t)(end_x>>4) & (0x00FF));    // CHR_TXTAREAEND
+        __delay_ms(1);
+        
         G1CMDL = x;
-        G1CMDH = 0x530A;    // CHR_PRINTCHAR
-
-        G1CMDL = x;
-        G1CMDH = 0x580A;    // CHR_TXTAREASTART
-
-        G1CMDL = x+16;
-        G1CMDH = 0x590A;    // CHR_TXTAREAEND
-
-        G1CMDL = x;
-        G1CMDH = 0x5A0A;    // CHR_PRINTPOS
+        G1CMDH = (0x5A00) || ((x>>8) & 0x00FF);    // CHR_PRINTPOS
 
         __delay_ms(10);
+        
         x++;
+
+      
         //G1CON2bits.DPTEST = 2;
     }
 
