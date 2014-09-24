@@ -28,7 +28,7 @@ _CONFIG2(FNOSC_FRCPLL & PLL96MHZ_ON & PLLDIV_DIV2)
 #define VER_BACK_PORCH 36
 #define VER_PULSE_WIDTH 2
 
-#define GFX_DISPLAY_PIXEL_COUNT    90160
+#define GFX_DISPLAY_PIXEL_COUNT    64000
 
 #define GFX_DISPLAY_BUFFER_START_ADDRESS        0x00000001ul
 #define GFX_DISPLAY_BUFFER_LENGTH               0x00012C00ul
@@ -37,7 +37,7 @@ _CONFIG2(FNOSC_FRCPLL & PLL96MHZ_ON & PLLDIV_DIV2)
 //__eds__ unsigned char GFXDisplayBufferBottom[GFX_DISPLAY_PIXEL_COUNT] __attribute__((eds));
 
 
-__eds__ unsigned char  __attribute__((far,section("eds1b"),space(eds) ,address(0x01000))) GFXDisplayBuffer[ GFX_DISPLAY_PIXEL_COUNT ]; // Sample data buffer
+__eds__ unsigned char  __attribute__((far,section("eds1b"),space(eds) ,address(0x01F00))) GFXDisplayBuffer[ GFX_DISPLAY_PIXEL_COUNT ]; // Sample data buffer
 //__eds__ unsigned char  __attribute__((far,section("eds2b"),space(eds) ,address(0x09000))) GFXDisplayBufferBottom[ GFX_DISPLAY_PIXEL_COUNT ]; // Sample data buffer
 
 
@@ -167,14 +167,14 @@ int main(void) {
 
     static uint32_t y;
     
-    for (y = 1; y < GFX_DISPLAY_PIXEL_COUNT+4000; y++)
+    for (y = 0; y < 90000; y++)
     {
         GFXDisplayBuffer[(unsigned long)(y)] = 0x00;
     }
     
     config_graphics();
 
-    static uint32_t x = 0x0000;
+    static unsigned long x = 0x0000;
     y=0;
 
     while (1) {
@@ -191,7 +191,7 @@ int main(void) {
         G1CMDL = (unsigned long)(0x0800) & 0xFFFF;
         G1CMDH = 0x5200;    // CHR_FONTBASE
         __delay_ms(1);
-        G1CMDL = (unsigned long)(x) & 0x7FFF;
+        G1CMDL = (unsigned long)(x) & 0x00FF;
         G1CMDH = 0x5300;    // CHR_PRINTCHAR
         __delay_ms(1);
         G1CMDL = 0x0000;
