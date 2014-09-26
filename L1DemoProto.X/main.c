@@ -41,7 +41,7 @@ __eds__ unsigned char  __attribute__((far,section("eds1b"),space(eds) ,address(0
 //__eds__ unsigned char  __attribute__((far,section("eds2b"),space(eds) ,address(0x09000))) GFXDisplayBufferBottom[ GFX_DISPLAY_PIXEL_COUNT ]; // Sample data buffer
 
 
-
+char message[] = "HACKADAY 10TH BIRTHDAY!\n";
 
 void config_graphics(void) {
     
@@ -164,56 +164,69 @@ int main(void) {
     ANSG = 0x0000;
     //TRISE = 0x0000;
 
-    uint32_t y;
-    for (y = 1; y < GFX_DISPLAY_PIXEL_COUNT; y++)
+    uint32_t i;
+    for (i = 1; i < GFX_DISPLAY_PIXEL_COUNT; i++)
     {
-        GFXDisplayBuffer[(unsigned long)(y)] = 0x00;
+        GFXDisplayBuffer[(unsigned long)(i)] = 0x00;
     }
     
     config_graphics();
 
-    static unsigned long x = 0x0000;
-    y=0;
+    static unsigned short c = 0;
+    static unsigned short x = 0;
+    static unsigned short y = 0;
+
+    static unsigned short pos_l = 0;
+    static unsigned short pos_h = 0;
 
     while (1) {
-        
-        G1CMDL = (unsigned long)(0x0800) & 0xFFFF;
-        G1CMDH = 0x5200;
-        __delay_ms(1);
-        G1CMDL = 0xFFFF;
-        G1CMDH = 0x5000;    // CHR_FGCOLOR
-        __delay_ms(1);
-        G1CMDL = 0x0000;
-        G1CMDH = 0x5100;    // CHR_BGCOLOR
-        __delay_ms(1);
-        G1CMDL = (unsigned long)(0x0800) & 0xFFFF;
+
+        G1CMDL = (unsigned short)(0x0800) & 0xFFFF;
         G1CMDH = 0x5200;    // CHR_FONTBASE
         __delay_ms(1);
-        G1CMDL = (unsigned long)(x) & 0x00FF;
-        G1CMDH = 0x5300;    // CHR_PRINTCHAR
-        __delay_ms(1);
+
         G1CMDL = 0x0000;
         G1CMDH = 0x5800;    // CHR_TXTAREASTART
         __delay_ms(1);
-        static uint32_t end_x = HOR_RES;
-        static uint32_t end_y = VER_RES;
 
-        G1CMDL = 0xFFFF;//((uint32_t)((end_x>>8)<<12) & (0xF000)) || ((uint32_t)(end_y) & (0x0FFF));
-        G1CMDH = (0x59FF); ///|| ((uint32_t)(end_x>>4) & (0x00FF));    // CHR_TXTAREAEND
+        G1CMDL = 0xFFFF;
+        G1CMDH = (0x59FF);  // CHR_TXTAREAEND
+        __delay_ms(1);
+
+        G1CMDL = 0xFFFF;
+        G1CMDH = 0x5000;    // CHR_FGCOLOR
+        __delay_ms(1);
+
+        G1CMDL = 0x0000;
+        G1CMDH = 0x5100;    // CHR_BGCOLOR
+        __delay_ms(1);
+
+        pos_l = (unsigned short)((y & 0x0FFF) + (x<<12));
+        pos_h = (unsigned short)(0x5A00 + (x>>4));
         __delay_ms(1);
         
-        G1CMDL = x;
-        G1CMDH = (0x5A00) || ((x>>8) & 0x00FF);    // CHR_PRINTPOS
+        G1CMDL = pos_l;
+        G1CMDH = pos_h;     // CHR_PRINTPOS
+        __delay_ms(1);
+
+        G1CMDL = (unsigned short)(message[c]) & 0x00FF;
+        G1CMDH = 0x5300;    // CHR_PRINTCHAR
 
         __delay_ms(10);
         
-        x++;
-        if(x>0xFFFE)
+        c++;
+        x = x + 8;
+        if(message[c] == '\n')
         {
-            x=0;
+            c = 0;
+            x = 0;
+            y = y + 16;
         }
-      
-        //G1CON2bits.DPTEST = 2;
+
+        if(y>390)
+        {
+            y = 0;
+        }
     }
 
     return 0;
