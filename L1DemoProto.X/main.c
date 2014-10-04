@@ -10,6 +10,7 @@
 #include <xc.h>
 
 #include "font.h"
+#include "uart.h"
 #define font_28_SIZE    (2088)
 
 
@@ -19,6 +20,7 @@
 _CONFIG1(FWDTEN_OFF)
 _CONFIG2(FNOSC_FRCPLL & PLL96MHZ_ON & PLLDIV_DIV2)
 
+        
 #define HOR_RES 640
 #define VER_RES 480           
 #define HOR_FRONT_PORCH 20
@@ -36,6 +38,7 @@ _CONFIG2(FNOSC_FRCPLL & PLL96MHZ_ON & PLLDIV_DIV2)
 __eds__ unsigned char  __attribute__((far,section("eds1b"),space(eds) ,address(0x01F00))) GFXDisplayBuffer[ GFX_DISPLAY_PIXEL_COUNT ]; // Sample data buffer
 
 char message[] = "HAPPY 10TH BIRTHDAY HACKADAY! \n";
+char input_char;
 
 void config_graphics(void) {
     
@@ -122,6 +125,8 @@ int main(void) {
     
     config_graphics();
 
+    UART1Init(103);
+
     static unsigned short c = 0;
     static unsigned short x = 0;
     static unsigned short y = 0;
@@ -133,40 +138,41 @@ int main(void) {
 
         G1CMDL = (unsigned short)(0x0800) & 0xFFFF;
         G1CMDH = 0x5200;    // CHR_FONTBASE
-        __delay_ms(1);
+        //__delay_ms(1);
 
         G1CMDL = 0x0000;
         G1CMDH = 0x5800;    // CHR_TXTAREASTART
-        __delay_ms(1);
+        //__delay_ms(1);
 
         G1CMDL = 0xFFFF;
         G1CMDH = (0x59FF);  // CHR_TXTAREAEND
-        __delay_ms(1);
+        //__delay_ms(1);
 
         G1CMDL = 0xFFFF;
         G1CMDH = 0x5000;    // CHR_FGCOLOR
-        __delay_ms(1);
+        //__delay_ms(1);
 
         G1CMDL = 0x0000;
         G1CMDH = 0x5100;    // CHR_BGCOLOR
-        __delay_ms(1);
+        //__delay_ms(1);
 
         pos_l = (unsigned short)((y & 0x0FFF) + (x<<12));
         pos_h = (unsigned short)(0x5A00 + (x>>4));
-        __delay_ms(1);
+        //__delay_ms(1);
         
         G1CMDL = pos_l;
         G1CMDH = pos_h;     // CHR_PRINTPOS
-        __delay_ms(1);
+        //__delay_ms(1);
 
-        G1CMDL = (unsigned short)(message[c]) & 0x00FF;
+        input_char = UART1GetChar();
+        G1CMDL = (unsigned short)(input_char) & 0x00FF;
         G1CMDH = 0x5300;    // CHR_PRINTCHAR
 
-        __delay_ms(10);
+        //__delay_ms(10);
         
         c++;
         x = x + 8;
-        if(message[c] == '\n')
+        if(input_char == '\n')
         {
             c = 0;
             x = 0;
@@ -176,6 +182,11 @@ int main(void) {
         if(y>390)
         {
             y = 0;
+            i=0;
+            for (i = 1; i < 47000; i++)
+            {
+                GFXDisplayBuffer[(unsigned long)(i)] = 0x00;
+            }
         }
     }
 
