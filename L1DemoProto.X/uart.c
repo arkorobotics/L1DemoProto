@@ -12,7 +12,11 @@ Author: JL
 //parameter BAUDRATEREG1 determines baud speed
 void UART1Init(int BAUDRATEREG1)
 {
-   
+   // Assign U1RX To Pin RP0
+    RPINR18bits.U1RXR = 0;
+    // Assign U1TX To Pin RP2
+    RPOR1bits.RP2R = 3;
+    RPOR1
 
    //Set up registers
    U1BRG = BAUDRATEREG1;	//set baud speed
