@@ -1,4 +1,4 @@
-Microchip Technology Inc, v∏Åå
+Microchip Technology Inc, v¿Å]
 
 Tool Name:
   c:\program files (x86)\microchip\xc16\v1.21\bin\bin\..\bin/elf-ld.exe
@@ -22,6 +22,7 @@ Command:
   -Lc:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib/dsPIC33F \
   -Lc:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../support/dsPIC33F/gld \
   build/default/production/main.o \
+  build/default/production/uart.o \
   --local-stack \
   --defsym=__MPLAB_BUILD=1 \
   -Tp24FJ256DA206.gld.00 \
@@ -61,10 +62,10 @@ section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
 .text                        0x200                0xd0           0x138  (312)
 .dinit                       0x2d0               0x5a0           0x870  (2160)
-.text                        0x870               0x226           0x339  (825)
-.init.delay32                0xa96                0x1c            0x2a  (42)
+.text                        0x870               0x270           0x3a8  (936)
+.init.delay32                0xae0                0x1c            0x2a  (42)
 
-                     Total program memory used (bytes):          0xd0b  (3339) 1%
+                     Total program memory used (bytes):          0xd7a  (3450) 1%
 
 
 Data Memory  [Origin = 0x800, Length = 0x18000]
@@ -110,12 +111,18 @@ External Symbols in Program Memory (by address):
                   0x0002cc                  __DefaultInterrupt
                   0x000870                  _config_graphics
                   0x00095a                  _main
-                  0x000a96                  ___delay32
+                  0x000a96                  _UART1Init
+                  0x000aac                  _UART1PutChar
+                  0x000ac4                  _UART1GetChar
+                  0x000ae0                  ___delay32
 
 External Symbols in Program Memory (by name):
 
+                  0x000ac4                  _UART1GetChar
+                  0x000a96                  _UART1Init
+                  0x000aac                  _UART1PutChar
                   0x0002cc                  __DefaultInterrupt
-                  0x000a96                  ___delay32
+                  0x000ae0                  ___delay32
                   0x000232                  __data_init
                   0x000232                  __data_init_extended
                   0x000226                  __psv_init
@@ -141,6 +148,7 @@ CONFIG1          0x02abfe           0x000002
 Linker script and memory map
 
 LOAD build/default/production/main.o
+LOAD build/default/production/uart.o
                     0x0001                  __MPLAB_BUILD = 0x1
 LOAD c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib/PIC24F\libpPIC24Fxxx-elf.a
                     0x2abf8                  __CONFIG4 = 0x2abf8
@@ -199,26 +207,31 @@ __CONFIG1         0x02abfe          0x2
 .comment
  *(.comment)
 
-.debug_info       0x000000       0x1e17
+.debug_info       0x000000       0x2329
  *(.debug_info)
  .debug_info      0x000000       0x1e17 build/default/production/main.o
+ .debug_info      0x001e17        0x512 build/default/production/uart.o
  *(.gnu.linkonce.wi.*)
 
-.debug_abbrev     0x000000        0x15d
+.debug_abbrev     0x000000        0x24c
  *(.debug_abbrev)
  .debug_abbrev    0x000000        0x15d build/default/production/main.o
+ .debug_abbrev    0x00015d         0xef build/default/production/uart.o
 
-.debug_line       0x000000        0x39a
+.debug_line       0x000000        0x4c4
  *(.debug_line)
  .debug_line      0x000000        0x39a build/default/production/main.o
+ .debug_line      0x00039a        0x12a build/default/production/uart.o
 
-.debug_frame      0x000000         0x34
+.debug_frame      0x000000         0x78
  *(.debug_frame)
  .debug_frame     0x000000         0x34 build/default/production/main.o
+ .debug_frame     0x000034         0x44 build/default/production/uart.o
 
-.debug_str        0x000000         0xe7
+.debug_str        0x000000         0xfa
  *(.debug_str)
  .debug_str       0x000000         0xe7 build/default/production/main.o
+ .debug_str       0x0000e7         0x13 build/default/production/uart.o
 
 .debug_loc
  *(.debug_loc)
@@ -227,18 +240,22 @@ __CONFIG1         0x02abfe          0x2
  *(.debug_macinfo)
 
 .debug_pubnames
-                  0x000000         0x74
+                  0x000000         0xb6
  *(.debug_pubnames)
  .debug_pubnames
                   0x000000         0x74 build/default/production/main.o
+ .debug_pubnames
+                  0x000074         0x42 build/default/production/uart.o
 
 .debug_ranges
  *(.debug_ranges)
 
-.debug_aranges    0x000000         0x18
+.debug_aranges    0x000000         0x30
  *(.debug_aranges)
  .debug_aranges
                   0x000000         0x18 build/default/production/main.o
+ .debug_aranges
+                  0x000018         0x18 build/default/production/uart.o
 
 .ivt              0x000004         0xfc
                   0x000004          0x4 LONG 0x2cc DEFINED (__ReservedTrap0)?ABSOLUTE (__ReservedTrap0):ABSOLUTE (__DefaultInterrupt)
@@ -1743,20 +1760,24 @@ LOAD default_isr
 LOAD data_init
 
 .debug_pubtypes
-                  0x000018        0x233
+                  0x000030        0x281
  .debug_pubtypes
-                  0x000018        0x233 build/default/production/main.o
+                  0x000030        0x233 build/default/production/main.o
+ .debug_pubtypes
+                  0x000263         0x4e build/default/production/uart.o
 
 __c30_signature
-                  0x00024c         0x18
+                  0x0002b2         0x1e
  __c30_signature
-                  0x00024c          0x6 build/default/production/main.o
+                  0x0002b2          0x6 build/default/production/main.o
  __c30_signature
-                  0x000252          0x6 c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(crt0_extended.o)
+                  0x0002b8          0x6 build/default/production/uart.o
  __c30_signature
-                  0x000258          0x6 c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(data_init_extended.o)
+                  0x0002be          0x6 c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(crt0_extended.o)
  __c30_signature
-                  0x00025e          0x6 c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(delay32.eo)
+                  0x0002c4          0x6 c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(data_init_extended.o)
+ __c30_signature
+                  0x0002ca          0x6 c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(delay32.eo)
 
 eds1b               0x1f00       0xfa00
  eds1b              0x1f00       0xfa00 build/default/production/main.o
@@ -1776,11 +1797,15 @@ eds1a               0x0800        0x828
 .dinit            0x0002d0        0x5a0
  .dinit           0x0002d0        0x5a0 data_init
 
-.text             0x000870        0x226
+.text             0x000870        0x270
  .text            0x000870        0x226 build/default/production/main.o
                   0x000870                  _config_graphics
                   0x00095a                  _main
+ .text            0x000a96         0x4a build/default/production/uart.o
+                  0x000a96                  _UART1Init
+                  0x000aac                  _UART1PutChar
+                  0x000ac4                  _UART1GetChar
 
-.init.delay32     0x000a96         0x1c
- .init.delay32    0x000a96         0x1c c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(delay32.eo)
-                  0x000a96                  ___delay32
+.init.delay32     0x000ae0         0x1c
+ .init.delay32    0x000ae0         0x1c c:/program files (x86)/microchip/xc16/v1.21/bin/bin/../../lib\libpic30-elf.a(delay32.eo)
+                  0x000ae0                  ___delay32
