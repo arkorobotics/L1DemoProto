@@ -171,22 +171,24 @@ int main(void) {
         //__delay_ms(10);
         
         c++;
-        x = x + 8;
-        if(input_char == '\n')
+        x = x + 16;
+        if(input_char == '\n' | x > 600)
         {
             c = 0;
             x = 0;
-            y = y + 16;
+            y = y + 20;
         }
 
         if(y>390)
         {
             y = 0;
+            //x = 0;
             i=0;
-            for (i = 1; i < 47000; i++)
+            for (i = 0x01000; i < (0x01F00 + 74000); i++)
             {
-                GFXDisplayBuffer[(unsigned long)(i)] = 0x00;
+               GFXDisplayBuffer[(unsigned long)(i)] = 0x00;
             }
+            
         }
     }
 
